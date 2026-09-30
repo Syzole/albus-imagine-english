@@ -1,4 +1,5 @@
 import { Component } from "obsidian";
+import { lt } from "@src/i18n/ui";
 
 interface ImageCaptionEditorOptions {
 	imageEl: HTMLImageElement;
@@ -27,7 +28,7 @@ export class ImageCaptionEditor extends Component {
 		super();
 		this.ownerDocument = options.embedEl.ownerDocument;
 		const ownerWindow = this.ownerDocument.defaultView;
-		if (!ownerWindow) throw new Error("图片所在窗口不可用");
+		if (!ownerWindow) throw new Error(lt("图片所在窗口不可用", "The window containing the image is unavailable"));
 		this.ownerWindow = ownerWindow;
 		const obsidianWindow = this.ownerDocument.win;
 
@@ -37,7 +38,7 @@ export class ImageCaptionEditor extends Component {
 		this.inputEl.addClass("afm-caption-input");
 		this.inputEl.rows = 1;
 		this.inputEl.placeholder = options.placeholder;
-		this.inputEl.ariaLabel = "图片标题";
+		this.inputEl.ariaLabel = lt("图片标题", "Image caption");
 		this.inputEl.spellcheck = false;
 		this.inputEl.value = options.value;
 		this.overlayEl.appendChild(this.inputEl);

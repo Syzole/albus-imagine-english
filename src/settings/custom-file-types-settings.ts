@@ -2,6 +2,7 @@ import { debounce, SettingDefinitionRender, SettingGroup } from 'obsidian';
 import type { NativePluginSettingTab } from './NativePluginSettingTab';
 import type CPlugin from '@src/main';
 import { createSettingDefinition, renderSettingDefinitions } from './setting-definitions';
+import { lt } from '@src/i18n/ui';
 
 export function getCustomFileTypesSettingDefinitions(
 	plugin: CPlugin,
@@ -12,17 +13,17 @@ export function getCustomFileTypesSettingDefinitions(
 
 	if (customTypes.length === 0) {
 		definitions.push(createSettingDefinition(
-			'暂无自定义文件类型',
-			'添加后可为非图片文件指定预览封面.',
+			lt('暂无自定义文件类型', 'No custom file types yet'),
+			lt('添加后可为非图片文件指定预览封面.', 'Add one to configure preview covers for non-image files.'),
 			() => undefined,
 		));
 	} else {
 		customTypes.forEach((type, index) => {
-			definitions.push(createSettingDefinition('类型', '', (setting) => {
+			definitions.push(createSettingDefinition(lt('类型', 'Type'), '', (setting) => {
 				setting
 					.addText((text) => {
 						text
-							.setPlaceholder('文件扩展名 (如 PDF)')
+							.setPlaceholder(lt('文件扩展名 (如 PDF)', 'Source extension (for example, PDF)'))
 							.setValue(type.fileExtension)
 							.onChange(debounce(async (value) => {
 								type.fileExtension = value;
@@ -35,7 +36,7 @@ export function getCustomFileTypesSettingDefinitions(
 					})
 					.addText((text) => {
 						text
-							.setPlaceholder('封面扩展名 (如 JPG)')
+							.setPlaceholder(lt('封面扩展名 (如 JPG)', 'Cover extension (for example, JPG)'))
 							.setValue(type.coverExtension)
 							.onChange(debounce(async (value) => {
 								type.coverExtension = value;
@@ -48,7 +49,7 @@ export function getCustomFileTypesSettingDefinitions(
 					})
 					.addText((text) => {
 						text
-							.setPlaceholder('封面文件夹 (可选)')
+							.setPlaceholder(lt('封面文件夹 (可选)', 'Cover folder (optional)'))
 							.setValue(type.coverFolder || '')
 							.onChange(debounce(async (value) => {
 								type.coverFolder = value;
@@ -62,7 +63,7 @@ export function getCustomFileTypesSettingDefinitions(
 					.addExtraButton((btn) => {
 						btn
 							.setIcon('trash-2')
-							.setTooltip('删除此类型')
+							.setTooltip(lt('删除此类型', 'Delete this type'))
 							.onClick(async () => {
 								customTypes.splice(index, 1);
 								if (!plugin.settings.imageManager) {
@@ -78,13 +79,13 @@ export function getCustomFileTypesSettingDefinitions(
 	}
 
 	definitions.push(createSettingDefinition(
-		'添加文件类型',
-		'设置源文件扩展名, 封面扩展名和可选封面文件夹.',
+		lt('添加文件类型', 'Add file type'),
+		lt('设置源文件扩展名, 封面扩展名和可选封面文件夹.', 'Set source extension, cover extension, and optional cover folder.'),
 		(setting) => {
 		setting
 			.addButton((button) => {
 				button
-					.setButtonText('添加')
+					.setButtonText(lt('添加', 'Add'))
 					.setCta()
 					.onClick(() => {
 						customTypes.push({

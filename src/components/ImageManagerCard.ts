@@ -1,5 +1,6 @@
 import { App, setIcon } from "obsidian";
 import { ImageItem, ImageManagerSettings } from "../types/image-manager.types";
+import { lt } from "@src/i18n/ui";
 
 interface ImageManagerCardActions {
 	isSelected: (path: string) => boolean;
@@ -37,7 +38,7 @@ export function createImageManagerCard(
 	thumbnailEl.onclick = activate;
 	let imageEl: HTMLImageElement | null = null;
 	if (image.coverMissing) {
-		createUnavailableState(thumbnailEl, "file-x", "封面缺失");
+		createUnavailableState(thumbnailEl, "file-x", lt("封面缺失", "Cover missing"));
 	} else {
 		imageEl = thumbnailEl.createEl("img", {
 			cls: image.displayFile.extension.toLowerCase() === "svg"
@@ -53,15 +54,15 @@ export function createImageManagerCard(
 			if (loadFailed) return;
 			loadFailed = true;
 			imageEl?.addClass("image-manager-cover-hidden");
-			createUnavailableState(thumbnailEl, "circle-alert", "加载失败");
+			createUnavailableState(thumbnailEl, "circle-alert", lt("加载失败", "Load failed"));
 		};
 	}
 
 	const actionBar = thumbnailEl.createDiv("image-manager-image-actions");
-	createAction(actionBar, "folder-open", "打开", "image-manager-open-button", () => actions.onOpen(image));
-	createAction(actionBar, "pencil", "重命名", "image-manager-rename-button", () => actions.onRename(image));
-	createAction(actionBar, "folder-tree", "移动", "image-manager-move-button", () => actions.onMove(image));
-	createAction(actionBar, "trash-2", "删除", "image-manager-delete-button", () => actions.onDelete(image));
+	createAction(actionBar, "folder-open", lt("打开", "Open"), "image-manager-open-button", () => actions.onOpen(image));
+	createAction(actionBar, "pencil", lt("重命名", "Rename"), "image-manager-rename-button", () => actions.onRename(image));
+	createAction(actionBar, "folder-tree", lt("移动", "Move"), "image-manager-move-button", () => actions.onMove(image));
+	createAction(actionBar, "trash-2", lt("删除", "Delete"), "image-manager-delete-button", () => actions.onDelete(image));
 
 	const formatBadge = thumbnailEl.createDiv({
 		text: image.originalFile.extension.toUpperCase(),
@@ -96,7 +97,7 @@ export function updateImageManagerReferenceBadge(itemEl: HTMLElement, image: Ima
 	}
 	const count = image.referenceCount ?? 0;
 	const badge = existing ?? thumbnailEl.createDiv("image-manager-reference-badge");
-	badge.setText(count === 0 ? "未引用" : `${count} 引用`);
+	badge.setText(count === 0 ? lt("未引用", "Unreferenced") : lt("{count} 引用", "{count} references", { count }));
 	badge.toggleClass("image-manager-reference-badge-has-refs", count > 0);
 }
 

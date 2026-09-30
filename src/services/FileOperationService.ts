@@ -6,6 +6,7 @@ import { App, MarkdownView, Notice, TFile } from "obsidian";
 import { ImageItem, SUPPORTED_IMAGE_EXTENSIONS } from "../types/image-manager.types";
 import { getCoverPath, joinVaultPath, normalizeVaultFolder } from "../utils/vaultPaths";
 import { DesktopIntegrationService } from "./DesktopIntegrationService";
+import { lt } from "@src/i18n/ui";
 
 export class FileOperationService {
 	private readonly desktop: DesktopIntegrationService;
@@ -47,10 +48,10 @@ export class FileOperationService {
 
 			if (coverMove) await this.app.fileManager.renameFile(coverMove.file, coverMove.newPath);
 
-			new Notice("文件重命名成功");
+			new Notice(lt("文件重命名成功", "File renamed"));
 		} catch (error) {
 			if (sourceMoved) await this.rollbackRename(image.originalFile, oldPath);
-			new Notice(`重命名失败: ${this.getErrorMessage(error)}`);
+			new Notice(lt("重命名失败: {error}", "Rename failed: {error}", { error: this.getErrorMessage(error) }));
 			throw error;
 		}
 	}
@@ -71,11 +72,11 @@ export class FileOperationService {
 			await this.app.fileManager.trashFile(image.originalFile);
 
 			if (!silent) {
-				new Notice("文件删除成功");
+				new Notice(lt("文件删除成功", "File deleted"));
 			}
 		} catch (error) {
 			if (!silent) {
-				new Notice(`删除失败: ${this.getErrorMessage(error)}`);
+				new Notice(lt("删除失败: {error}", "Delete failed: {error}", { error: this.getErrorMessage(error) }));
 			}
 			throw error;
 		}
@@ -86,7 +87,11 @@ export class FileOperationService {
 	 */
 	getDeleteExtraMessage(image: ImageItem): string {
 		if (image.isCustomType && image.customTypeConfig) {
-			return `同时会删除对应的 ${image.customTypeConfig.coverExtension.toUpperCase()} 封面文件`;
+			return lt(
+				"同时会删除对应的 {ext} 封面文件",
+				"The matching {ext} cover file will also be deleted",
+				{ ext: image.customTypeConfig.coverExtension.toUpperCase() },
+			);
 		}
 		return "";
 	}
@@ -102,7 +107,7 @@ export class FileOperationService {
 			const normalizedFolder = normalizeVaultFolder(targetFolder);
 			const newPath = joinVaultPath(normalizedFolder, image.originalFile.name);
 			if (newPath === image.originalFile.path) {
-				if (!silent) new Notice("文件已在该文件夹中");
+				if (!silent) new Notice(lt("文件已在该文件夹中", "File is already in that folder"));
 				return null;
 			}
 			this.ensureDestinationAvailable(newPath, oldPath);
@@ -113,11 +118,11 @@ export class FileOperationService {
 
 			if (coverMove) await this.app.fileManager.renameFile(coverMove.file, coverMove.newPath);
 
-			if (!silent) new Notice("文件移动成功");
+			if (!silent) new Notice(lt("文件移动成功", "File moved"));
 			return newPath;
 		} catch (error) {
 			if (sourceMoved) await this.rollbackRename(image.originalFile, oldPath);
-			if (!silent) new Notice(`移动失败: ${this.getErrorMessage(error)}`);
+			if (!silent) new Notice(lt("移动失败: {error}", "Move failed: {error}", { error: this.getErrorMessage(error) }));
 			throw error;
 		}
 	}
@@ -154,11 +159,11 @@ export class FileOperationService {
 	private ensureDestinationAvailable(destination: string, currentPath: string): void {
 		const existing = this.app.vault.getAbstractFileByPath(destination);
 		if (existing && destination !== currentPath) {
-			throw new Error(`目标路径已存在: ${destination}`);
+			throw new Error(lt("目标路径已存在: {destination}", "Target path already exists: {destination}", { destination }));
 		}
 		const parentPath = destination.includes("/") ? destination.slice(0, destination.lastIndexOf("/")) : "";
 		if (parentPath && !this.app.vault.getFolderByPath(parentPath)) {
-			throw new Error(`目标文件夹不存在: ${parentPath}`);
+			throw new Error(lt("目标文件夹不存在: {parentPath}", "Target folder does not exist: {parentPath}", { parentPath }));
 		}
 	}
 

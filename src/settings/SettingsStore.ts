@@ -51,6 +51,9 @@ function sanitizeSettings(settings: IPluginSettings): IPluginSettings {
 	]).has(settings.settingsTab)) {
 		settings.settingsTab = "IMAGE_MANAGER";
 	}
+	if (settings.uiLanguage !== "zh-CN" && settings.uiLanguage !== "en") {
+		settings.uiLanguage = "en";
+	}
 	return settings;
 }
 

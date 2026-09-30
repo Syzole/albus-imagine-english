@@ -260,4 +260,5 @@ The image viewer was inspired by [Image Toolkit](https://github.com/sissilab/obs
 
 ## License
 
-Imagine is released under the [GNU Affero General Public License v3.0](LICENSE).
+Imagine is released under the [GNU Affero General Public License v3.0](LICENSE).  
+This repository, `Syzole/albus-imagine-english`, is a modified fork of `AlbusGuo/albus-imagine` that adds swappable Chinese/English UI text while preserving original attribution and AGPL licensing.

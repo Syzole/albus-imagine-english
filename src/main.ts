@@ -11,6 +11,7 @@ import { SUPPORTED_IMAGE_EXTENSIONS } from "./types/image-manager.types";
 import { ImageCatalogService } from "./services/ImageCatalogService";
 import { ReferenceCheckService } from "./services/ReferenceCheckService";
 import { ImageLayoutStateManager } from "./services/ImageLayoutStateManager";
+import { lt, setUiLanguage } from "./i18n/ui";
 import "./styles";
 
 export default class AlbusFigureManagerPlugin extends Plugin {
@@ -26,6 +27,7 @@ export default class AlbusFigureManagerPlugin extends Plugin {
 
 	async onload() {
 		await this.settingsStore.loadSettings();
+		setUiLanguage(this.settings.uiLanguage ?? "en");
 		this.workspaceDocuments.add(document);
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			this.workspaceDocuments.add(leaf.view.containerEl.ownerDocument);
@@ -70,7 +72,7 @@ export default class AlbusFigureManagerPlugin extends Plugin {
 		// 添加功能区图标 - 打开图片管理器
 		const ribbonIconEl = this.addRibbonIcon(
 			"images",
-			"图片管理器",
+			lt("图片管理器", "Image manager"),
 			() => {
 				void this.openImageManager();
 			}
@@ -80,7 +82,7 @@ export default class AlbusFigureManagerPlugin extends Plugin {
 		// 添加命令 - 打开图片管理器
 		this.addCommand({
 			id: "open-image-manager",
-			name: "打开图片管理器",
+			name: lt("打开图片管理器", "Open image manager"),
 			callback: () => {
 				void this.openImageManager();
 			},
@@ -89,7 +91,7 @@ export default class AlbusFigureManagerPlugin extends Plugin {
 		// 添加命令 - 插入图片
 		this.addCommand({
 			id: "insert-image",
-			name: "插入图片",
+			name: lt("插入图片", "Insert image"),
 			callback: () => {
 				this.openImagePicker();
 			},
@@ -211,6 +213,7 @@ export default class AlbusFigureManagerPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		setUiLanguage(this.settings.uiLanguage ?? "en");
 
 		// 更新 SVG 反色 CSS 类
 		this.updateSvgInvertClass();

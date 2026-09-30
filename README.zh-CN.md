@@ -260,4 +260,5 @@ Obsidian 1.13 及更高版本会将 Imagine 设置显示为可搜索的原生页
 
 ## 许可证
 
-Imagine 基于 [GNU Affero General Public License v3.0](LICENSE) 发布。
+Imagine 基于 [GNU Affero General Public License v3.0](LICENSE) 发布。  
+本仓库 `Syzole/albus-imagine-english` 是基于 `AlbusGuo/albus-imagine` 的修改版本，提供可切换的中英文界面文本，并保留原作者署名与 AGPL 许可。

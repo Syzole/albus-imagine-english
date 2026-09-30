@@ -2,10 +2,11 @@ import { debounce, Notice, SettingDefinitionRender, SettingGroup } from 'obsidia
 import type { NativePluginSettingTab } from './NativePluginSettingTab';
 import type CPlugin from '@src/main';
 import { createSettingDefinition, renderSettingDefinitions } from './setting-definitions';
+import { lt } from '@src/i18n/ui';
 
 export function getImageResizeSettingDefinitions(plugin: CPlugin): SettingDefinitionRender[] {
 	return [
-		createSettingDefinition('启用 callout 外图片拖拽调整大小', '是否允许通过拖拽 callout 外图片边缘来调整图片大小', (setting) => {
+		createSettingDefinition(lt('启用 callout 外图片拖拽调整大小', 'Resize images outside callouts'), lt('是否允许通过拖拽 callout 外图片边缘来调整图片大小', 'Allow drag-resizing by the image edge outside callouts'), (setting) => {
 			setting
 			.addToggle((toggle) => {
 				toggle
@@ -24,7 +25,7 @@ export function getImageResizeSettingDefinitions(plugin: CPlugin): SettingDefini
 					});
 			});
 		}),
-		createSettingDefinition('启用 callout 内图片拖拽调整大小', '是否允许通过拖拽 callout 内图片边缘来调整图片大小', (setting) => {
+		createSettingDefinition(lt('启用 callout 内图片拖拽调整大小', 'Resize images inside callouts'), lt('是否允许通过拖拽 callout 内图片边缘来调整图片大小', 'Allow drag-resizing by the image edge inside callouts'), (setting) => {
 			setting
 			.addToggle((toggle) => {
 				toggle
@@ -43,7 +44,7 @@ export function getImageResizeSettingDefinitions(plugin: CPlugin): SettingDefini
 					});
 			});
 		}),
-		createSettingDefinition('调整大小的时间间隔', '拖动调整最小刻度, 0 表示不对齐刻度', (setting) => {
+		createSettingDefinition(lt('调整大小的时间间隔', 'Resize step'), lt('拖动调整最小刻度, 0 表示不对齐刻度', 'Minimum pixel interval when dragging; 0 disables snapping'), (setting) => {
 		const currentValue = plugin.settings.imageResize?.resizeInterval || 0;
 		setting
 			.addText((text) => {
@@ -64,7 +65,7 @@ export function getImageResizeSettingDefinitions(plugin: CPlugin): SettingDefini
 							plugin.settings.imageResize.resizeInterval = numValue;
 							await plugin.saveSettings();
 						} else {
-							new Notice('请输入非负整数');
+							new Notice(lt('请输入非负整数', 'Please enter a non-negative integer'));
 						}
 					}, 500));
 				text.inputEl.type = 'number';
@@ -72,7 +73,7 @@ export function getImageResizeSettingDefinitions(plugin: CPlugin): SettingDefini
 				text.inputEl.step = '1';
 			});
 		}),
-		createSettingDefinition('边缘检测区域大小', '鼠标在图片边缘多少像素内可以触发调整大小', (setting) => {
+		createSettingDefinition(lt('边缘检测区域大小', 'Edge detection area'), lt('鼠标在图片边缘多少像素内可以触发调整大小', 'How many pixels from the edge can trigger resizing'), (setting) => {
 		const currentValue = plugin.settings.imageResize?.edgeSize || 20;
 		setting
 			.addSlider((slider) => {

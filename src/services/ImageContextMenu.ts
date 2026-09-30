@@ -14,6 +14,7 @@ import { joinVaultPath, normalizeExtension, normalizeVaultFolder } from "../util
 import { DesktopIntegrationService } from "./DesktopIntegrationService";
 import { EditorImageLinkService } from "./EditorImageLinkService";
 import { ImageCaptionEditor } from "../components/ImageCaptionEditor";
+import { lt } from "@src/i18n/ui";
 
 type MenuItemWithSubmenu = MenuItem & { setSubmenu?: () => Menu; };
 
@@ -114,29 +115,29 @@ export class ImageContextMenu extends Component {
 
 	private addAlignmentSubmenu(menu: Menu, img: HTMLImageElement): void {
 		this.addImageMenuItem(menu, (item) => {
-			item.setTitle("图片位置").setIcon("layout-template");
+			item.setTitle(lt("图片位置", "Image position")).setIcon("layout-template");
 			const submenuItem = item as MenuItemWithSubmenu;
 			if (typeof submenuItem.setSubmenu !== "function") {
 				item.setDisabled(true);
 				return;
 			}
 			const submenu = submenuItem.setSubmenu();
-			submenu.addItem((child) => child.setTitle("居中").setIcon("align-center")
+			submenu.addItem((child) => child.setTitle(lt("居中", "Center")).setIcon("align-center")
 				.onClick(() => void this.updateAlignment(img, "center")));
-			submenu.addItem((child) => child.setTitle("左对齐").setIcon("align-left")
+			submenu.addItem((child) => child.setTitle(lt("左对齐", "Align left")).setIcon("align-left")
 				.onClick(() => void this.updateAlignment(img, "align-left")));
-			submenu.addItem((child) => child.setTitle("右对齐").setIcon("align-right")
+			submenu.addItem((child) => child.setTitle(lt("右对齐", "Align right")).setIcon("align-right")
 				.onClick(() => void this.updateAlignment(img, "align-right")));
-			submenu.addItem((child) => child.setTitle("左侧环绕").setIcon("panel-left")
+			submenu.addItem((child) => child.setTitle(lt("左侧环绕", "Wrap left")).setIcon("panel-left")
 				.onClick(() => void this.updateAlignment(img, "left")));
-			submenu.addItem((child) => child.setTitle("右侧环绕").setIcon("panel-right")
+			submenu.addItem((child) => child.setTitle(lt("右侧环绕", "Wrap right")).setIcon("panel-right")
 				.onClick(() => void this.updateAlignment(img, "right")));
 		});
 	}
 
 	private addDarkModeMenuItem(menu: Menu, img: HTMLImageElement): void {
 		this.addImageMenuItem(menu, (item) => {
-			item.setTitle("深色反色")
+			item.setTitle(lt("深色反色", "Dark inversion"))
 				.setIcon("moon")
 				.onClick(() => void this.toggleDarkMode(img));
 		});
@@ -144,7 +145,7 @@ export class ImageContextMenu extends Component {
 
 	private addEditCaptionMenuItem(menu: Menu, img: HTMLImageElement): void {
 		this.addImageMenuItem(menu, (item) => {
-			item.setTitle("编辑标题")
+			item.setTitle(lt("编辑标题", "Edit caption"))
 				.setIcon("captions")
 				.onClick(() => void this.editCaption(img));
 		});
@@ -153,20 +154,20 @@ export class ImageContextMenu extends Component {
 	private updateAlignment(img: HTMLImageElement, alignment: ImagePosition): void {
 		const imagePath = this.editorLinks.resolveImagePath(img);
 		if (!imagePath) {
-			new Notice("无法获取图片路径");
+			new Notice(lt("无法获取图片路径", "Could not resolve image path"));
 			return;
 		}
 
 		const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!activeView) {
-			new Notice("请在编辑模式下使用");
+			new Notice(lt("请在编辑模式下使用", "Please use this in editing mode"));
 			return;
 		}
 
 		const editor = activeView.editor;
 		const match = this.editorLinks.findSingleMatch(editor, imagePath, img);
 		if (!match) {
-			new Notice("未找到图片链接");
+			new Notice(lt("未找到图片链接", "Image link not found"));
 			return;
 		}
 
@@ -174,33 +175,33 @@ export class ImageContextMenu extends Component {
 		this.editorLinks.replace(editor, match, newLink);
 
 		const labels: Record<ImagePosition, string> = {
-			center: "居中",
-			"align-left": "左对齐",
-			"align-right": "右对齐",
-			left: "左侧环绕",
-			right: "右侧环绕",
-			inline: "行间",
+			center: lt("居中", "Center"),
+			"align-left": lt("左对齐", "Align left"),
+			"align-right": lt("右对齐", "Align right"),
+			left: lt("左侧环绕", "Wrap left"),
+			right: lt("右侧环绕", "Wrap right"),
+			inline: lt("行间", "Inline"),
 		};
-		new Notice(`图片位置: ${labels[alignment]}`);
+		new Notice(lt("图片位置: {alignment}", "Image position: {alignment}", { alignment: labels[alignment] }));
 	}
 
 	private toggleDarkMode(img: HTMLImageElement): void {
 		const imagePath = this.editorLinks.resolveImagePath(img);
 		if (!imagePath) {
-			new Notice("无法获取图片路径");
+			new Notice(lt("无法获取图片路径", "Could not resolve image path"));
 			return;
 		}
 
 		const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!activeView) {
-			new Notice("请在编辑模式下使用");
+			new Notice(lt("请在编辑模式下使用", "Please use this in editing mode"));
 			return;
 		}
 
 		const editor = activeView.editor;
 		const match = this.editorLinks.findSingleMatch(editor, imagePath, img);
 		if (!match) {
-			new Notice("未找到图片链接");
+			new Notice(lt("未找到图片链接", "Image link not found"));
 			return;
 		}
 
@@ -208,21 +209,21 @@ export class ImageContextMenu extends Component {
 		const newLink = updateImageLink(match.fullMatch, { dark: !currentHasDark });
 		this.editorLinks.replace(editor, match, newLink);
 
-		new Notice(currentHasDark ? "已取消反色" : "已启用反色");
+		new Notice(currentHasDark ? lt("已取消反色", "Inversion disabled") : lt("已启用反色", "Inversion enabled"));
 	}
 
 	private addOpenSourceFileMenuItem(menu: Menu, img: HTMLImageElement): void {
 		this.addImageMenuItem(menu, (item) => {
-			item.setTitle("打开源文件").setIcon("file-text").onClick(async () => {
+			item.setTitle(lt("打开源文件", "Open source file")).setIcon("file-text").onClick(async () => {
 				const imagePath = this.editorLinks.resolveImagePath(img);
 				if (!imagePath) {
-					new Notice("无法获取图片路径");
+					new Notice(lt("无法获取图片路径", "Could not resolve image path"));
 					return;
 				}
 
 				const file = this.app.vault.getAbstractFileByPath(imagePath);
 				if (!(file instanceof TFile)) {
-					new Notice("文件不存在");
+					new Notice(lt("文件不存在", "File does not exist"));
 					return;
 				}
 
@@ -319,27 +320,27 @@ export class ImageContextMenu extends Component {
 	private editCaption(img: HTMLImageElement): void {
 		const imagePath = this.editorLinks.resolveImagePath(img);
 		if (!imagePath) {
-			new Notice("无法获取图片路径");
+			new Notice(lt("无法获取图片路径", "Could not resolve image path"));
 			return;
 		}
 
 		const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
 		if (!activeView) {
-			new Notice("请在编辑模式下使用");
+			new Notice(lt("请在编辑模式下使用", "Please use this in editing mode"));
 			return;
 		}
 
 		const editor = activeView.editor;
 		const match = this.editorLinks.findSingleMatch(editor, imagePath, img);
 		if (!match) {
-			new Notice("未找到图片链接");
+			new Notice(lt("未找到图片链接", "Image link not found"));
 			return;
 		}
 
 		const currentCaption = parseImageLink(match.fullMatch)?.caption ?? "";
 		const imageEmbed = img.closest(".image-embed") as HTMLElement;
 		if (!imageEmbed) {
-			new Notice("无法找到图片容器");
+			new Notice(lt("无法找到图片容器", "Could not find image container"));
 			return;
 		}
 
@@ -348,7 +349,7 @@ export class ImageContextMenu extends Component {
 			imageEl: img,
 			embedEl: imageEmbed,
 			value: currentCaption,
-			placeholder: "输入图片标题 (留空删除)",
+			placeholder: lt("输入图片标题 (留空删除)", "Enter an image caption (leave empty to remove)"),
 			onSubmit: (caption) => {
 				const currentLink = editor.getRange(
 					{ line: match.lineNumber, ch: match.startCh },
@@ -360,7 +361,7 @@ export class ImageContextMenu extends Component {
 						this.editorLinks.replace(editor, match, replacement);
 					}
 				} else {
-					new Notice("图片链接已变化, 标题未保存");
+					new Notice(lt("图片链接已变化, 标题未保存", "Image link changed; caption was not saved"));
 				}
 			},
 			onClose: () => {

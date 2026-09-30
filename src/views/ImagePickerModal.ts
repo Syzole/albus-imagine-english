@@ -14,6 +14,7 @@ import { ImageCatalogService } from "../services/ImageCatalogService";
 import { buildImageLink, ImagePosition } from "../utils/imageLink";
 import { createImagePickerCard } from "../components/ImagePickerCard";
 import { filterAndSortImages } from "../utils/imageCollection";
+import { lt } from "@src/i18n/ui";
 
 interface PickerImageController extends ViewportGridController<ImageItem>, ViewportMediaController {
 	imageEl: HTMLImageElement | null;
@@ -68,7 +69,7 @@ export class ImagePickerModal extends Modal {
 		// 为模态框添加自定义类名
 		this.modalEl.addClass("mod-image-picker");
 
-		this.titleEl.setText("选择图片");
+		this.titleEl.setText(lt("选择图片", "Select image"));
 
 		this.setupLayout();
 		this.loadImages();
@@ -130,7 +131,7 @@ export class ImagePickerModal extends Modal {
 		const folderInputContainer = leftSection.createDiv("image-manager-folder-input-container");
 		const folderInput = folderInputContainer.createEl("input", {
 			type: "text",
-			placeholder: "按文件夹筛选...",
+			placeholder: lt("按文件夹筛选...", "Filter by folder..."),
 			value: this.selectedFolder,
 			cls: "image-manager-folder-input",
 		});
@@ -139,7 +140,7 @@ export class ImagePickerModal extends Modal {
 		if (this.selectedFolder) {
 			const clearBtn = folderInputContainer.createEl("button", {
 				cls: "image-manager-folder-clear clickable-icon",
-				attr: { "aria-label": "清空筛选" },
+				attr: { "aria-label": lt("清空筛选", "Clear filter") },
 			});
 			setIcon(clearBtn, "x");
 			clearBtn.onclick = () => {
@@ -165,11 +166,11 @@ export class ImagePickerModal extends Modal {
 
 		const statsEl = leftSection.createDiv("image-manager-stats");
 		statsEl.createSpan({ text: `${this.images.length}`, cls: "image-manager-stats-number" });
-		statsEl.createSpan({ text: " 张图片", cls: "image-manager-stats-label" });
+		statsEl.createSpan({ text: lt(" 张图片", " images"), cls: "image-manager-stats-label" });
 		if (this.isMultiSelectMode) {
 			statsEl.createSpan({ text: " / ", cls: "image-manager-stats-sep" });
 			statsEl.createSpan({ text: `${this.selectedImages.size}`, cls: "image-manager-stats-number" });
-			statsEl.createSpan({ text: " 张已选", cls: "image-manager-stats-label" });
+			statsEl.createSpan({ text: lt(" 张已选", " selected"), cls: "image-manager-stats-label" });
 		}
 
 		// 右侧: 多选和确认按钮
@@ -179,7 +180,7 @@ export class ImagePickerModal extends Modal {
 		if (this.isMultiSelectMode) {
 			const confirmBtn = rightSection.createEl("button", {
 				cls: "clickable-icon",
-				attr: { "aria-label": `确认插入 (${this.selectedImages.size})` },
+				attr: { "aria-label": lt("确认插入 ({count})", "Confirm insert ({count})", { count: this.selectedImages.size }) },
 			});
 			setIcon(confirmBtn, "check");
 			// 没有选中图片时禁用
@@ -192,7 +193,7 @@ export class ImagePickerModal extends Modal {
 		// 多选按钮
 		const multiSelectBtn = rightSection.createEl("button", {
 			cls: "clickable-icon",
-			attr: { "aria-label": this.isMultiSelectMode ? "取消多选" : "多选" },
+			attr: { "aria-label": this.isMultiSelectMode ? lt("取消多选", "Exit multi-select") : lt("多选", "Multi-select") },
 		});
 		setIcon(multiSelectBtn, this.isMultiSelectMode ? "x-square" : "copy-check");
 		if (this.isMultiSelectMode) {
@@ -219,7 +220,7 @@ export class ImagePickerModal extends Modal {
 		const searchBoxEl = this.searchContainer.createDiv("image-manager-search-box");
 		const searchInput = searchBoxEl.createEl("input", {
 			type: "text",
-			placeholder: "搜索图片...",
+			placeholder: lt("搜索图片...", "Search images..."),
 			value: this.searchQuery,
 			cls: "image-manager-search-input",
 		});
@@ -233,16 +234,16 @@ export class ImagePickerModal extends Modal {
 
 		const sortFieldBtn = sortControlsEl.createEl("button", {
 			cls: "clickable-icon",
-			attr: { "aria-label": "排序方式" },
+			attr: { "aria-label": lt("排序方式", "Sort field") },
 		});
 		setIcon(sortFieldBtn, "arrow-up-narrow-wide");
 		sortFieldBtn.onclick = (evt) => {
 			const menu = new Menu();
 			const sortFieldOptions: { value: SortField; text: string; }[] = [
-				{ value: "mtime", text: "修改时间" },
-				{ value: "ctime", text: "创建时间" },
-				{ value: "size", text: "文件大小" },
-				{ value: "name", text: "文件名" },
+				{ value: "mtime", text: lt("修改时间", "Modified time") },
+				{ value: "ctime", text: lt("创建时间", "Created time") },
+				{ value: "size", text: lt("文件大小", "File size") },
+				{ value: "name", text: lt("文件名", "File name") },
 			];
 			sortFieldOptions.forEach((opt) => {
 				menu.addItem((item) => {
@@ -260,7 +261,7 @@ export class ImagePickerModal extends Modal {
 
 		const sortOrderBtn = sortControlsEl.createEl("button", {
 			cls: "clickable-icon",
-			attr: { "aria-label": this.sortOrder === "desc" ? "降序" : "升序" },
+			attr: { "aria-label": this.sortOrder === "desc" ? lt("降序", "Descending") : lt("升序", "Ascending") },
 		});
 		this.updateSortOrderButton(sortOrderBtn);
 		sortOrderBtn.onclick = () => {
@@ -275,10 +276,10 @@ export class ImagePickerModal extends Modal {
 		button.empty();
 		if (this.sortOrder === "desc") {
 			setIcon(button, "arrow-down");
-			button.setAttribute("aria-label", "降序");
+			button.setAttribute("aria-label", lt("降序", "Descending"));
 		} else {
 			setIcon(button, "arrow-up");
-			button.setAttribute("aria-label", "升序");
+			button.setAttribute("aria-label", lt("升序", "Ascending"));
 		}
 	}
 
@@ -295,14 +296,14 @@ export class ImagePickerModal extends Modal {
 
 		// 位置选择
 		const positionGroup = this.optionsContainer.createDiv("option-group");
-		positionGroup.createSpan({ text: "位置:", cls: "option-label" });
+		positionGroup.createSpan({ text: lt("位置:", "Position:"), cls: "option-label" });
 		new DropdownComponent(positionGroup)
-			.addOption("center", "居中")
-			.addOption("align-left", "左对齐")
-			.addOption("align-right", "右对齐")
-			.addOption("left", "左侧环绕")
-			.addOption("right", "右侧环绕")
-			.addOption("inline", "行间")
+			.addOption("center", lt("居中", "Center"))
+			.addOption("align-left", lt("左对齐", "Align left"))
+			.addOption("align-right", lt("右对齐", "Align right"))
+			.addOption("left", lt("左侧环绕", "Wrap left"))
+			.addOption("right", lt("右侧环绕", "Wrap right"))
+			.addOption("inline", lt("行间", "Inline"))
 			.setValue(this.imagePosition)
 			.onChange((value) => {
 				this.imagePosition = value as ImagePosition;
@@ -310,7 +311,7 @@ export class ImagePickerModal extends Modal {
 
 		// 反色选项
 		const invertGroup = this.optionsContainer.createDiv("option-group");
-		invertGroup.createSpan({ text: "反色:", cls: "option-label" });
+		invertGroup.createSpan({ text: lt("反色:", "Inversion:"), cls: "option-label" });
 		const toggleContainer = invertGroup.createDiv("option-toggle");
 		new ToggleComponent(toggleContainer)
 			.setValue(this.invertColor)
@@ -320,9 +321,9 @@ export class ImagePickerModal extends Modal {
 
 		// 标题输入
 		const captionGroup = this.optionsContainer.createDiv("option-group");
-		captionGroup.createSpan({ text: "标题:", cls: "option-label" });
+		captionGroup.createSpan({ text: lt("标题:", "Caption:"), cls: "option-label" });
 		new TextComponent(captionGroup)
-			.setPlaceholder("输入图片标题 (可选)")
+			.setPlaceholder(lt("输入图片标题 (可选)", "Enter image caption (optional)"))
 			.setValue(this.imageCaption)
 			.onChange((value) => {
 				this.imageCaption = value;
@@ -337,7 +338,7 @@ export class ImagePickerModal extends Modal {
 			this.viewportGrid.setItems([]);
 			const loadingEl = this.gridStateEl.createDiv("image-manager-loading-state");
 			loadingEl.createDiv("image-manager-loading-spinner");
-			loadingEl.createSpan({ text: "加载中..." });
+			loadingEl.createSpan({ text: lt("加载中...", "Loading...") });
 			return;
 		}
 
@@ -345,7 +346,7 @@ export class ImagePickerModal extends Modal {
 			this.gridEl.hide();
 			this.viewportGrid.setItems([]);
 			const emptyEl = this.gridStateEl.createDiv("image-manager-empty-state");
-			emptyEl.createSpan({ text: this.images.length === 0 ? "没有找到图片" : "没有符合条件的图片" });
+			emptyEl.createSpan({ text: this.images.length === 0 ? lt("没有找到图片", "No images found") : lt("没有符合条件的图片", "No images match the current filters") });
 			return;
 		}
 		this.gridEl.show();
@@ -400,7 +401,7 @@ export class ImagePickerModal extends Modal {
 			this.renderHeader();
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
-			new Notice(`加载图片失败: ${message}`);
+			new Notice(lt("加载图片失败: {message}", "Failed to load images: {message}", { message }));
 		} finally {
 			this.isLoading = false;
 			this.renderGrid();
@@ -438,7 +439,7 @@ export class ImagePickerModal extends Modal {
 	 */
 	private handleGridInsert(): void {
 		if (this.selectedImages.size === 0) {
-			new Notice("请至少选择一张图片");
+			new Notice(lt("请至少选择一张图片", "Please select at least one image"));
 			return;
 		}
 

@@ -1,4 +1,5 @@
 import { App, Editor, Notice, TFile } from "obsidian";
+import { lt } from "@src/i18n/ui";
 
 interface EditorImageMatch {
 	lineNumber: number;
@@ -74,7 +75,7 @@ export class EditorImageLinkService {
 			}
 		}
 
-		new Notice("当前图片链接不唯一, 已取消操作以避免修改错误链接");
+		new Notice(lt("当前图片链接不唯一, 已取消操作以避免修改错误链接", "The current image link is not unique. Operation canceled to avoid editing the wrong link"));
 		return null;
 	}
 

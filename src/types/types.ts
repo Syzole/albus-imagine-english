@@ -24,10 +24,13 @@ export interface ImageViewerSettings {
 	disableNativeImageViewer: boolean;
 }
 
+export type UiLanguage = "zh-CN" | "en";
+
 export interface IPluginSettings {
 	imageManager?: ImageManagerSettings;
 	imageResize?: ImageResizeSettings;
 	imageViewer?: ImageViewerSettings;
+	uiLanguage?: UiLanguage;
 	settingsTab?: "IMAGE_MANAGER" | "IMAGE_RESIZE" | "IMAGE_VIEWER" | "CUSTOM_FILE_TYPES";
 }
 
@@ -58,5 +61,6 @@ export const DEFAULT_SETTINGS: IPluginSettings = {
 	},
 	imageResize: DEFAULT_IMAGE_RESIZE_SETTINGS,
 	imageViewer: DEFAULT_IMAGE_VIEWER_SETTINGS,
+	uiLanguage: "en",
 	settingsTab: "IMAGE_MANAGER",
 };

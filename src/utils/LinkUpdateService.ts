@@ -1,5 +1,6 @@
 import { App, Editor, MarkdownView, Notice } from "obsidian";
 import { parseImageLink, updateImageLinkSize } from "./imageLink";
+import { lt } from "@src/i18n/ui";
 
 interface LinkMatch {
 	replacement: string;
@@ -37,8 +38,8 @@ export class LinkUpdateService {
 				.map((match) => ({ line, match })));
 		}
 		if (candidates.length !== 1) {
-			if (candidates.length > 1) new Notice("找到多个相同图片链接, 请手动调整大小");
-			else if (inTable || inCallout) new Notice("未找到当前图片链接, 请手动调整大小");
+			if (candidates.length > 1) new Notice(lt("找到多个相同图片链接, 请手动调整大小", "Found multiple matching image links. Please resize manually"));
+			else if (inTable || inCallout) new Notice(lt("未找到当前图片链接, 请手动调整大小", "Could not find the current image link. Please resize manually"));
 			return;
 		}
 
